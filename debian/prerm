@@ -1,0 +1,15 @@
+#!/bin/bash
+# prerm script for colorful-control-center
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+  systemctl stop colorful-control-center.service >/dev/null 2>&1 || true
+  systemctl disable colorful-control-center.service >/dev/null 2>&1 || true
+
+  KVER="$(uname -r)"
+  modprobe -r clevo_cc 2>/dev/null || true
+  rm -f "/lib/modules/${KVER}/extra/clevo_cc.ko"
+  depmod -a "${KVER}" >/dev/null 2>&1 || true
+  rm -rf "/usr/src/colorful-control-center-${KVER}"
+fi
+exit 0

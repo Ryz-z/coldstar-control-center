@@ -1,0 +1,11 @@
+#!/bin/bash
+# postrm script for colorful-control-center
+set -e
+
+if [ "$1" = "purge" ]; then
+  rm -rf /var/lib/colorful-control-center
+  rm -f /var/log/colorful-control-center-kmod.log
+fi
+
+systemctl daemon-reload >/dev/null 2>&1 || true
+exit 0

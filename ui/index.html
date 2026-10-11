@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐星控制中心</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8b5cf6"/>
+            <stop offset="1" stop-color="#22d3ee"/>
+          </linearGradient>
+        </defs>
+        <rect x="3" y="3" width="42" height="42" rx="11" fill="none" stroke="url(#lg1)" stroke-width="2.4"/>
+        <g fill="none" stroke="url(#lg1)" stroke-width="2.6" stroke-linecap="round">
+          <path d="M24 24c0-9 0-13 0-13"/>
+          <path d="M24 24c7.8-4.5 11.3-6.5 11.3-6.5"/>
+          <path d="M24 24c-7.8-4.5-11.3-6.5-11.3-6.5"/>
+        </g>
+        <circle cx="24" cy="24" r="3.4" fill="url(#lg1)"/>
+        <path d="M15 33h18M17 37h14" stroke="url(#lg1)" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-text">
+        <h1>控制中心</h1>
+        <p>Colorful P15 · Clevo</p>
+      </div>
+    </div>
+
+    <nav id="nav">
+      <button class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24"><path d="M4 13a8 8 0 1 1 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 13l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.6 16.5l1.6-1.2M18.4 16.5l-1.6-1.2M12 6v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        仪表盘
+      </button>
+      <button class="nav-item" data-page="fans">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 9.5c.6-3.3.9-5.5.9-5.5 3 .3 4.6 2 4.5 4.6-.1 1.7-2.6 3-5.4 3.2M14.2 13.4c2.9 1.7 4.8 2.9 4.8 2.9-1.2 2.8-3.4 3.7-5.7 2.6-1.6-.8-1.8-3.5-.9-6.1M9.9 13.3c-3 1.6-4.9 2.6-4.9 2.6-1.6-2.6-1-4.9.9-6.2 1.4-1 3.9-.1 6 1.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        风扇控制
+      </button>
+      <button class="nav-item" data-page="keyboard">
+        <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M6 13.6h.01M9.5 13.6h.01M13 13.6h.01M16.5 13.6h.01M8 16.6h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        键盘灯效
+      </button>
+      <button class="nav-item" data-page="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.9 1.9M16.6 16.6l1.9 1.9M18.5 5.5l-1.9 1.9M7.4 16.6l-1.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        系统设置
+      </button>
+      <button class="nav-item" data-page="diag">
+        <svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3.5 10L15 12h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        诊断
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="dot" id="conn-dot"></span>
+      <span id="conn-text">连接中…</span>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="banner" class="banner hidden"></div>
+
+    <!-- ======================== 仪表盘 ======================== -->
+    <section class="page active" id="page-dashboard">
+      <header class="page-head">
+        <h2>仪表盘</h2>
+        <div class="page-head-sub" id="ident-line">—</div>
+      </header>
+
+      <div class="cards-grid">
+        <div class="card stat">
+          <div class="stat-label">CPU 温度</div>
+          <div class="stat-value"><span id="d-cpu">--</span><span class="unit">°C</span></div>
+          <div class="stat-sub" id="d-cpu-sub">负载 -- · -- MHz</div>
+          <div class="bar"><div class="bar-fill" id="d-cpu-bar"></div></div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">GPU 温度</div>
+          <div class="stat-value"><span id="d-gpu">--</span><span class="unit">°C</span></div>
+          <div class="stat-sub" id="d-gpu-sub">使用率 --</div>
+          <div class="bar"><div class="bar-fill alt" id="d-gpu-bar"></div></div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">风扇转速</div>
+          <div class="stat-value small" id="d-fans">-- / --</div>
+          <div class="stat-sub" id="d-fans-sub">RPM · 模式: 自动</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">内存 / 电池</div>
+          <div class="stat-value small" id="d-mem">--%</div>
+          <div class="stat-sub" id="d-bat">--</div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-title">温度曲线 <span class="legend"><i class="lg-cpu"></i>CPU <i class="lg-gpu"></i>GPU</span></div>
+        <canvas id="chart" width="1040" height="190"></canvas>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">快捷操作</div>
+          <div class="row gap wrap">
+            <div class="seg" id="quick-modes">
+              <button data-mode="auto">自动</button>
+              <button data-mode="silent">静音</button>
+              <button data-mode="balanced">均衡</button>
+              <button data-mode="performance">性能</button>
+              <button data-mode="full">全速</button>
+            </div>
+          </div>
+          <div class="row between mt12">
+            <span class="muted">键盘背光</span>
+            <label class="switch"><input type="checkbox" id="quick-kbd"><span class="slider"></span></label>
+          </div>
+          <div class="row between mt12">
+            <span class="muted">风扇模式</span>
+            <span class="pill" id="quick-fan-mode">自动</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">设备信息</div>
+          <div class="kv">
+            <div><span>型号</span><b id="i-product">--</b></div>
+            <div><span>BIOS</span><b id="i-bios">--</b></div>
+            <div><span>内核</span><b id="i-kernel">--</b></div>
+            <div><span>已运行</span><b id="i-uptime">--</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="d-zones-card">
+        <div class="card-title">机身传感器</div>
+        <div class="chips" id="d-zones">--</div>
+      </div>
+    </section>
+
+    <!-- ======================== 风扇控制 ======================== -->
+    <section class="page" id="page-fans">
+      <header class="page-head">
+        <h2>风扇控制</h2>
+        <div class="page-head-sub">通过蓝天 EC 固件接口直接控制双风扇，支持自定义温度曲线</div>
+      </header>
+
+      <div class="card">
+        <div class="card-title">工作模式</div>
+        <div class="seg big" id="fan-modes">
+          <button data-mode="auto">自动 (EC)</button>
+          <button data-mode="silent">静音</button>
+          <button data-mode="balanced">均衡</button>
+          <button data-mode="performance">性能</button>
+          <button data-mode="full">全速</button>
+          <button data-mode="custom">自定义曲线</button>
+        </div>
+        <div class="hint mt8" id="fan-mode-hint"></div>
+        <div class="row gap mt12 wrap">
+          <button class="btn primary" id="btn-fan-apply-auto">交还 EC 自动控制</button>
+          <button class="btn" id="btn-fan-manual-toggle">手动定速…</button>
+        </div>
+      </div>
+
+      <div class="card" id="curve-card">
+        <div class="card-title">自定义温度曲线 <span class="muted">（拖动圆点调整；双击空白添加、右键删除）</span></div>
+        <div id="curve-wrap"></div>
+        <div class="row between mt8">
+          <div class="muted small" id="curve-live">—</div>
+          <div class="row gap">
+            <button class="btn" id="btn-curve-reset">恢复默认</button>
+            <button class="btn primary" id="btn-curve-apply">应用曲线</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="manual-card">
+        <div class="card-title">手动定速（实验性）</div>
+        <div class="hint">EC 生效下限约为 25%，低于该值将按 25% 处理。注意：手动模式下风扇不会随温度自动加速，请勿长期高负载使用。</div>
+        <div class="row between mt12">
+          <span class="muted">联动控制两个风扇</span>
+          <label class="switch"><input type="checkbox" id="manual-linked" checked><span class="slider"></span></label>
+        </div>
+        <div id="manual-sliders" class="mt8"></div>
+        <div class="row gap mt8">
+          <button class="btn primary" id="btn-manual-apply">应用</button>
+          <button class="btn" id="btn-manual-auto">恢复自动</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">实时状态</div>
+        <div class="kv">
+          <div><span>CPU 温度</span><b id="f-cpu">--</b></div>
+          <div><span>GPU 温度</span><b id="f-gpu">--</b></div>
+          <div><span>风扇转速</span><b id="f-rpm">--</b></div>
+          <div><span>当前输出</span><b id="f-duty">--</b></div>
+        </div>
+        <div class="hint mt8" id="f-error"></div>
+      </div>
+    </section>
+
+    <!-- ======================== 键盘灯效 ======================== -->
+    <section class="page" id="page-keyboard">
+      <header class="page-head">
+        <h2>键盘灯效</h2>
+        <div class="page-head-sub" id="kb-type-line">检测中…</div>
+      </header>
+
+      <div class="card">
+        <div class="row between">
+          <div>
+            <div class="card-title">键盘背光</div>
+            <div class="muted small">总开关与整体亮度</div>
+          </div>
+          <label class="switch big"><input type="checkbox" id="kb-on"><span class="slider"></span></label>
+        </div>
+        <div class="mt16" id="kb-brightness-row">
+          <div class="row between"><span class="muted">亮度</span><span id="kb-bright-val" class="pill">60%</span></div>
+          <input type="range" id="kb-brightness" min="0" max="100" value="60">
+        </div>
+        <div class="mt16 hidden" id="kb-white-row">
+          <div class="row between"><span class="muted">白光档位</span><span id="kb-white-val" class="pill">2</span></div>
+          <input type="range" id="kb-white" min="0" max="2" value="2">
+        </div>
+      </div>
+
+      <div class="card" id="kb-effect-card">
+        <div class="card-title">灯效模式</div>
+        <div class="effects" id="kb-effects"></div>
+      </div>
+
+      <div class="card" id="kb-color-card">
+        <div class="card-title">颜色设置 <span class="muted" id="kb-color-hint"></span></div>
+        <div class="row between">
+          <span class="muted">所有区域使用相同颜色</span>
+          <label class="switch"><input type="checkbox" id="kb-linked" checked><span class="slider"></span></label>
+        </div>
+        <div id="kb-zones" class="mt12"></div>
+        <div class="hint mt8" id="kb-error"></div>
+      </div>
+
+      <div class="card" id="kb-unsupported" style="display:none">
+        <div class="card-title">未检测到可控键盘灯</div>
+        <div class="hint">未能识别键盘背光类型。<br>可能原因：内核模块未加载（见“诊断”页），或本机型键盘不受该接口控制。</div>
+      </div>
+    </section>
+
+    <!-- ======================== 系统设置 ======================== -->
+    <section class="page" id="page-settings">
+      <header class="page-head">
+        <h2>系统设置</h2>
+        <div class="page-head-sub">性能策略、电池与启动行为</div>
+      </header>
+
+      <div class="card">
+        <div class="card-title">ODM 性能预设</div>
+        <div class="hint">蓝天固件的整机性能策略（对应 Windows 控制中心的"运行模式"）。修改后风扇策略可能变化；若你已启用手动/曲线风扇控制，风扇部分仍由本控制中心接管。</div>
+        <div class="seg mt12" id="perf-modes">
+          <button data-p="0">省电</button>
+          <button data-p="1">安静</button>
+          <button data-p="2">性能</button>
+          <button data-p="3">影音</button>
+        </div>
+        <div class="hint mt8" id="perf-status">当前: 未设置</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">电池</div>
+        <div class="kv">
+          <div><span>电量</span><b id="s-bat-cap">--</b></div>
+          <div><span>电源</span><b id="s-bat-ac">--</b></div>
+          <div><span>功率</span><b id="s-bat-power">--</b></div>
+          <div><span>充电阈值</span><b id="s-bat-threshold">--</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">启动行为</div>
+        <div class="row between mt8"><span class="muted">开机自启动（关闭窗口后驻留托盘）</span>
+          <label class="switch"><input type="checkbox" id="s-autostart"><span class="slider"></span></label></div>
+        <div class="hint small">开启后：每次登录系统自动在托盘后台运行；右键托盘图标可快速切换工作模式或退出。</div>
+        <div class="row between mt8"><span class="muted">开机自动应用键盘灯效</span>
+          <label class="switch"><input type="checkbox" id="s-kbd-autostart"><span class="slider"></span></label></div>
+        <div class="row between mt8"><span class="muted">停止服务时风扇交还 EC 自动</span>
+          <label class="switch"><input type="checkbox" id="s-restore-auto"><span class="slider"></span></label></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">维护</div>
+        <div class="row gap wrap">
+          <button class="btn" id="btn-open-diag">打开诊断页</button>
+          <button class="btn danger" id="btn-fan-release">立即将风扇交还 EC</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 诊断 ======================== -->
+    <section class="page" id="page-diag">
+      <header class="page-head">
+        <h2>诊断</h2>
+        <div class="page-head-sub">硬件接口状态、原始固件命令与问题上报信息</div>
+      </header>
+
+      <div class="cards-grid">
+        <div class="card stat">
+          <div class="stat-label">内核桥接模块</div>
+          <div class="stat-value small" id="dg-module">--</div>
+          <div class="stat-sub" id="dg-iface">--</div>
+          <div class="row gap mt8">
+            <button class="btn small" id="btn-mod-load">加载模块</button>
+            <button class="btn small" id="btn-mod-reprobe">重新探测</button>
+          </div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">键盘接口</div>
+          <div class="stat-value small" id="dg-kb">--</div>
+          <div class="stat-sub" id="dg-kb-sub">--</div>
+          <button class="btn small mt8" id="btn-kb-redetect">重新检测键盘</button>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">风扇接口</div>
+          <div class="stat-value small" id="dg-fan">--</div>
+          <div class="stat-sub" id="dg-fan-sub">--</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">安全启动</div>
+          <div class="stat-value small" id="dg-sb">--</div>
+          <div class="stat-sub">若为"开启"且模块未加载，请按报告说明签名注册</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">原始固件命令控制台 <span class="muted">（高级；参数为十六进制）</span></div>
+        <div class="row gap wrap">
+          <input class="input" id="raw-cmd" placeholder="cmd 如 0x52" value="0x52">
+          <input class="input" id="raw-arg" placeholder="arg 如 0" value="0">
+          <label class="check"><input type="checkbox" id="raw-buf"> 读取缓冲区(64B)</label>
+          <button class="btn primary" id="btn-raw-send">发送</button>
+        </div>
+        <div class="row gap wrap mt8">
+          <button class="btn small ghost qc" data-cmd="0x0D" data-arg="0" data-buf="1">键盘规格 0x0D</button>
+          <button class="btn small ghost qc" data-cmd="0x52" data-arg="0">BIOS特性1 0x52</button>
+          <button class="btn small ghost qc" data-cmd="0x7A" data-arg="0">BIOS特性2 0x7A</button>
+          <button class="btn small ghost qc" data-cmd="0x63" data-arg="0">风扇信息1 0x63</button>
+          <button class="btn small ghost qc" data-cmd="0x64" data-arg="0">风扇信息2 0x64</button>
+          <button class="btn small ghost qc" data-cmd="0x6E" data-arg="0">风扇信息3 0x6E</button>
+          <button class="btn small ghost qc" data-cmd="0x3D" data-arg="0">白色背光读取 0x3D</button>
+        </div>
+        <pre class="out" id="raw-out">—</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-title">环境报告</div>
+        <div class="row gap mt8">
+          <button class="btn primary" id="btn-diag-refresh">刷新报告</button>
+          <button class="btn" id="btn-diag-copy">复制</button>
+          <button class="btn" id="btn-diag-download">导出为文件</button>
+        </div>
+        <pre class="out tall" id="diag-out">点"刷新报告"获取…</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast-wrap"></div>
+<script src="app.js"></script>
+</body>
+</html>

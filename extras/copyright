@@ -1,0 +1,24 @@
+Colorful Control Center (隐星控制中心)
+Copyright (C) 2026
+
+本软件包内容及许可证:
+
+1. 用户态守护进程、Web UI、启动器 (daemon/, ui/, launcher/)
+   License: GPL-2.0-or-later
+
+2. 内核桥接模块 clevo_cc.c (kmod/)
+   License: GPL-2.0-or-later
+   该模块的工作方式参考/改写了 tuxedo-drivers 项目:
+   Copyright (c) 2020-2026 TUXEDO Computers GmbH <tux@tuxedocomputers.com>
+   https://github.com/tuxedocomputers/tuxedo-drivers (GPL-2.0+)
+   协议知识来源: Clevo "Control Center" 固件接口的公开发掘成果。
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.

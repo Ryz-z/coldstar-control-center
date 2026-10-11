@@ -1,0 +1,8 @@
+#!/bin/bash
+# kernel postinst.d hook: rebuild the clevo_cc module for a newly installed kernel
+for kver in "$@"; do
+  [ -n "$kver" ] || continue
+  [ -d "/lib/modules/$kver/build" ] || continue
+  /usr/lib/colorful-control-center/kmod/build.sh "$kver" >/dev/null 2>&1 || true
+done
+exit 0

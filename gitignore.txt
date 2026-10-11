@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[co]
+
+# 内核模块构建产物
+*.ko
+*.o
+*.mod
+*.mod.c
+*.symvers
+*.order
+.*.cmd
+*.cmd
+modules.order
+Module.symvers
+.module-common.o
+
+# 构建目录
+out/
+deb-stage/
+
+# 编辑器 / 系统杂项
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store

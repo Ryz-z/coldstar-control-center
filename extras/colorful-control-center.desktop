@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=控制中心
+Name[zh_CN]=控制中心
+Name[en]=Colorful Control Center
+GenericName=Control Center
+GenericName[zh_CN]=控制中心
+Comment=风扇转速与键盘灯效控制（Colorful P15 / Clevo 模具）
+Comment[en]=Fan speed and keyboard backlight control (Clevo barebone)
+Exec=colorful-control-center
+TryExec=colorful-control-center
+Icon=colorful-control-center
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=fan;keyboard;rgb;clevo;colorful;风扇;键盘;灯光;
+StartupNotify=true
+StartupWMClass=colorful-control-center

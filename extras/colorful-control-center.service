@@ -1,0 +1,14 @@
+[Unit]
+Description=隐星控制中心服务 (Colorful Control Center daemon)
+After=multi-user.target
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=-/sbin/modprobe clevo_cc
+ExecStart=/usr/bin/python3 /usr/lib/colorful-control-center/daemon/cccd.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

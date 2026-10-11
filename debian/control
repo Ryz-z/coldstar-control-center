@@ -1,0 +1,22 @@
+Package: colorful-control-center
+Version: 1.0.5
+Architecture: amd64
+Maintainer: Colorful Control Center <local@localhost>
+Depends: python3 (>= 3.8), systemd, kmod
+Recommends: python3-gi, gir1.2-gtk-3.0, gir1.2-webkit2-4.1, gir1.2-ayatanaappindicator3-0.1, curl, openssl
+Section: utils
+Priority: optional
+Installed-Size: 0
+Description: 隐星控制中心 - 风扇与键盘灯效控制 (Colorful P15 / Clevo)
+ A Linux control center for Colorful XING P15 (Clevo barebone) laptops.
+ Features:
+  - Fan speed control: auto / quiet / balanced / performance / full speed,
+    custom temperature-fan curve, manual fixed speed
+  - RGB keyboard backlight: on/off, brightness, per-zone colors and
+    hardware effects (breathe, cycle, wave, ...)
+  - Live monitoring: CPU/GPU/NVMe temperatures, fan RPM, battery
+ .
+ It uses a small kernel bridge (clevo_cc) exposing the OEM Clevo firmware
+ interface (ACPI CLV0001 _DSM or WMI ABBC0F6D) as /dev/clevo_cc, the same
+ interface used by the Windows "Control Center".
+ 兼容: 七彩虹隐星 P15 系列等蓝天(Clevo)模具笔记本.

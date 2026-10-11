@@ -1,0 +1,75 @@
+#!/bin/bash
+# postinst script for colorful-control-center
+set -e
+
+SB="/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+SB_ON=0
+if [ -e "$SB" ]; then
+  val=$(od -An -tu1 -j4 -N1 "$SB" 2>/dev/null | tr -d ' ')
+  [ "${val:-0}" = "1" ] && SB_ON=1
+fi
+
+echo "→ 编译内核桥接模块 clevo_cc ..."
+if /usr/lib/colorful-control-center/kmod/build.sh; then
+  echo "  ✓ 内核模块构建完成"
+else
+  echo "  ⚠ 模块构建失败：风扇/键盘控制暂不可用。"
+  echo "    详见 /var/log/colorful-control-center-kmod.log"
+  echo "    （常见原因：缺少 linux-headers / build-essential）"
+fi
+
+if ! /usr/bin/python3 -c "import gi; gi.require_version('AyatanaAppIndicator3','0.1')" >/dev/null 2>&1; then
+  echo "→ 安装系统托盘支持组件 ..."
+  DEBIAN_FRONTEND=noninteractive timeout 90 apt-get install -y gir1.2-ayatanaappindicator3-0.1 >/dev/null 2>&1 || true
+fi
+
+modprobe clevo_cc 2>/dev/null || true
+
+if ! grep -q '^clevo_cc ' /proc/modules 2>/dev/null; then
+  if [ "$SB_ON" = "1" ]; then
+    cat <<'EOF'
+
+===============================================================
+  ⚠ 检测到【安全启动 Secure Boot 开启】
+  模块已用本机生成的密钥签名，但需要你重启登记一次（仅此一次）:
+
+    1) 立即重启电脑
+    2) 重启时出现蓝色 MOK 界面:
+       Enroll MOK → Continue → 输入密码: colorful → Reboot
+    3) 进入系统后，控制中心即可完整控制风扇与键盘灯
+
+  （若重启后没有出现蓝色界面，终端执行:
+     sudo mokutil --import /var/lib/colorful-control-center/mok/MOK.der
+   然后再次重启。也可以改为进入 BIOS 关闭 Secure Boot，效果相同。）
+===============================================================
+
+EOF
+  else
+    echo "  提示: 模块未加载，请在控制中心「诊断」页查看原因。"
+  fi
+else
+  echo "  ✓ 内核模块已加载，硬件控制就绪"
+fi
+
+systemctl daemon-reload >/dev/null 2>&1 || true
+systemctl enable colorful-control-center.service >/dev/null 2>&1 || true
+systemctl restart colorful-control-center.service >/dev/null 2>&1 || true
+
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database -q >/dev/null 2>&1 || true
+fi
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor >/dev/null 2>&1 || true
+fi
+
+cat <<'EOF'
+
+============================================
+  ✓ 隐星控制中心 安装完成
+  · 打开方式1: 应用菜单搜索「控制中心」
+  · 打开方式2: 终端执行 colorful-control-center
+  · 命令行状态: colorful-cc-cli status
+============================================
+
+EOF
+exit 0

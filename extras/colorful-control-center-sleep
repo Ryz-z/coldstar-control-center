@@ -1,0 +1,8 @@
+#!/bin/bash
+# systemd-sleep hook: re-apply fan/keyboard state after resume
+case "$1" in
+  post)
+    curl -s --max-time 5 -X POST "http://127.0.0.1:8632/api/reapply" >/dev/null 2>&1 || true
+    ;;
+esac
+exit 0
